@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="ThemeHouse_GuestsFirstPos" title="[⌂] Guests First Post Only" version_string="1.0.1c" version_id="1447261019" url="http://xf.themehouse.io/" install_callback_class="ThemeHouse_Install" install_callback_method="install" uninstall_callback_class="ThemeHouse_Install" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates/>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="ThemeHouse_Listener_ControllerPreDispatch" callback_method="controllerPreDispatch" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="ThemeHouse_GuestsFirstPos_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="ThemeHouse_Listener_InitDependencies" callback_method="initDependencies" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_GuestsFirstPos_Listener_LoadClass" callback_method="loadClassModel" active="0" hint="XenForo_Model_Thread" description="XenForo_Model_Thread (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_GuestsFirstPos_Listener_LoadClass" callback_method="loadClassModel" active="0" hint="XenForo_Model_Post" description="XenForo_Model_Post (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_GuestsFirstPos_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenForo_ControllerPublic_Thread" description="XenForo_ControllerPublic_Thread (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="ThemeHouse_GuestsFirstPos_Listener_LoadClass" callback_method="loadClassController" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="ThemeHouse_GuestsFirstPos_Listener_LoadClass" callback_method="loadClassModel" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="template_hook" execute_order="10" callback_class="ThemeHouse_GuestsFirstPos_Listener_TemplateHook" callback_method="templateHook" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="th_guestsFirstPost" display_order="2000" debug_only="0"/>
+    <option option_id="th_guestsFirstPost_allForums" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params/>
+      <sub_options/>
+      <relation group_id="th_guestsFirstPost" display_order="1"/>
+    </option>
+    <option option_id="th_guestsFirstPost_checkNodePermissions" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params/>
+      <sub_options/>
+      <relation group_id="th_guestsFirstPost" display_order="100"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions>
+      <permission permission_group_id="forum" permission_id="showFirstPostOnly" permission_type="flag" default_value="unset" interface_group_id="forumPermissions" display_order="1000"/>
+    </permissions>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="option_group_th_guestsFirstPost" version_id="1375284239" version_string="1.0.0"><![CDATA[Guests First Post Only by ThemeHouse]]></phrase>
+    <phrase title="option_group_th_guestsFirstPost_description" version_id="1375284239" version_string="1.0.0"><![CDATA[Options for the Guests First Post Only by ThemeHouse add-on.]]></phrase>
+    <phrase title="option_th_guestsFirstPost_allForums" version_id="1375284239" version_string="1.0.0"><![CDATA[Restrict guests to viewing first post only on all forums]]></phrase>
+    <phrase title="option_th_guestsFirstPost_allForums_explain" version_id="1375284239" version_string="1.0.0"><![CDATA[Deselecting this option will require you to set this permission on a per-node basis (see below).]]></phrase>
+    <phrase title="option_th_guestsFirstPost_checkNodePermissions" version_id="1375284239" version_string="1.0.0"><![CDATA[Also check node permissions]]></phrase>
+    <phrase title="option_th_guestsFirstPost_checkNodePermissions_explain" version_id="1375284239" version_string="1.0.0"><![CDATA[Selecting this option will also check for the 'Show First Post Only' permission on a per-node basis for logged in users. This may add an extra database query to some pages.]]></phrase>
+    <phrase title="permission_forum_showFirstPostOnly" version_id="1375284239" version_string="1.0.0"><![CDATA[Show first post only]]></phrase>
+    <phrase title="th_do_not_have_permission_guestsfirstpost" version_id="1375284239" version_string="1.0.0"><![CDATA[You only have permission to view the first post in this thread.]]></phrase>
+    <phrase title="th_must_be_registered_guestsfirstpost" version_id="0" version_string="1.0.0"><![CDATA[You must be a logged-in, registered member of this site to view further posts in this thread.]]></phrase>
+    <phrase title="th_register_to_continue_guestsfirstpost" version_id="0" version_string="1.0.0"><![CDATA[Please register or login.]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates>
+    <template title="th_thread_alert_guestsfirstpost" version_id="1375284239" version_string="1.0.0"><![CDATA[<xen:if is="{$thread.first_post_only}">
+	<xen:if is="{$visitor.user_id}">
+		<dd>{xen:phrase th_do_not_have_permission_guestsfirstpost}</dd>
+	<xen:else />
+		<dd>{xen:phrase th_must_be_registered_guestsfirstpost}</dd>
+	</xen:if>
+</xen:if>]]></template>
+    <template title="th_thread_view_form_before_guestsfirstpost" version_id="1375284239" version_string="1.0.0"><![CDATA[<xen:if hascontent="true">
+	<dl class="threadAlerts secondaryContent">
+		<dt>{xen:phrase thread_status}:</dt>
+		<xen:contentcheck>
+			<xen:include template="th_thread_alert_guestsfirstpost" />
+		</xen:contentcheck>
+	</dl>
+</xen:if>]]></template>
+  </templates>
+  <public_template_modifications>
+    <modification template="footer" modification_key="th_copyrightNotice_guestsFirstPos" description="Copyright notice for [⌂] Guests First Post Only" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase (?:xenforo|extra)_copyright}/]]></find>
+      <replace><![CDATA[ThemeHouse_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+    <modification template="footer" modification_key="th_copyrightNotice_guestsFirstPost" description="Copyright notice for Guests First Post Only by ThemeHouse" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase xenforo_copyright}/]]></find>
+      <replace><![CDATA[ThemeHouse_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+    <modification template="thread_view" modification_key="th_threadView_guestsFirstPost" description="Add in alert for user to login/register to view further posts in thread." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<dt>{xen:phrase thread_status}:</dt>\s*<xen:contentcheck>#s]]></find>
+      <replace><![CDATA[${0}
+<xen:include template="th_thread_alert_guestsfirstpost" />]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>
